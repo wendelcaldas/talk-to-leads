@@ -1,7 +1,7 @@
-# Use uma imagem oficial do PHP como base
+# Use uma imagem oficial do PHP como base (PHP 8.1)
 FROM php:8.1-fpm
 
-# Instale dependências
+# Instale dependências para o PHP e extensões necessárias
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     git \
     unzip \
+    nginx \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
 
@@ -21,11 +22,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copie os arquivos do projeto para a imagem
 COPY . .
 
-# Instale as dependências do PHP
+# Instale as dependências do Laravel com o Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Exponha a porta 80
+# Copiar a configuração do Nginx
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Exponha as portas necessárias
 EXPOSE 80
 
-# Defina o comando para iniciar o servidor web (com Nginx, por exemplo)
-CMD ["php-fpm"]
+# Comando para iniciar o Nginx e o PHP-FPM simultaneamente
+CMD service nginx start && php-fpm
