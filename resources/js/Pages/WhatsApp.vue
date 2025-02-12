@@ -45,13 +45,13 @@ const sendWhatsApp = async () => {
   <div class="flex flex-col items-center justify-center min-h-screen">
     <h1 class="text-2xl font-bold mb-4">Enviar WhatsApp</h1>
     <div class="w-full max-w-md p-4 bg-white shadow rounded">
-      <label class="block mb-2">Código do País:</label>
+      <!-- <label class="block mb-2">Código do País:</label> -->
       <!-- Select para escolher o código do país -->
-      <select v-model="countryCode" class="w-full p-2 border rounded mb-4">
+      <!-- <select v-model="countryCode" class="w-full p-2 border rounded mb-4">
         <option v-for="country in countries" :key="country.code" :value="country.dial_code">
           {{ country.name }} ({{ country.dial_code }})
         </option>
-      </select>
+      </select> -->
 
       <label class="block mb-2">Número de Telefone:</label>
       <!-- Input para o número do telefone -->
@@ -72,7 +72,7 @@ const sendWhatsApp = async () => {
       <button
         :disabled="loading"
         @click="sendWhatsApp"
-        class="w-full p-2 bg-green text-black rounded hover:bg-green-600"
+        class="w-full p-2 bg-green-600 text-white rounded hover:bg-green-600"
       >
         {{ loading ? "Enviando..." : "Enviar" }}
       </button>
