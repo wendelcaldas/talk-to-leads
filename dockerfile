@@ -29,7 +29,7 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Exponha as portas necessárias
-EXPOSE 3000
+EXPOSE 8080
 
 # Comando para iniciar o Nginx e o PHP-FPM simultaneamente
 CMD service nginx start && php-fpm
