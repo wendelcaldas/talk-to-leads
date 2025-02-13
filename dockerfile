@@ -1,7 +1,7 @@
-# Use uma imagem oficial do PHP como base (PHP 8.1)
+# Usar a imagem oficial do PHP com FPM
 FROM php:8.2-fpm
 
-# Instale dependências para o PHP e extensões necessárias
+# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -9,27 +9,26 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     git \
     unzip \
-    nginx \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
 
-# Defina o diretório de trabalho
+# Configurar diretório de trabalho
 WORKDIR /var/www
 
-# Copie o composer para a imagem
+# Copiar o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copie os arquivos do projeto para a imagem
+# Copiar arquivos do projeto para a imagem
 COPY . .
 
-# Instale as dependências do Laravel com o Composer
+# Instalar dependências do Laravel
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Copiar a configuração do Nginx
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+# Configurar permissões
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Exponha as portas necessárias
+# Expor a porta do servidor
 EXPOSE 9000
 
-# Comando para iniciar o Nginx e o PHP-FPM simultaneamente
-CMD service nginx start && php-fpm
+# Comando para iniciar o PHP-FPM
+CMD ["php-fpm"]
